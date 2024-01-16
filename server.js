@@ -23,20 +23,26 @@ app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "./Develop/public/notes.html"));
 });
 
+// route for retrieving created notes from db file
 app.get("/api/notes", (req, res) => {
   let notes = fs.readFileSync(`./Develop/db/db.json`);
   res.json(JSON.parse(notes));
 });
 
+// route for creating notes
 app.post("/api/notes", (req, res) => {
+  // Log that a POST request was received
   console.info(`${req.method} request received!`);
 
+  // Destructuring
   const { title, text } = req.body;
 
+  // If parameters are met
   if (title && text) {
     const newNote = {
       title,
       text,
+      // uniqid used to give random id
       id: uniqid(),
     };
 
@@ -44,6 +50,7 @@ app.post("/api/notes", (req, res) => {
     let parsedNotes = JSON.parse(notes);
     parsedNotes.push(newNote);
 
+    // Write the string to a file
     fs.writeFile(`./Develop/db/db.json`, JSON.stringify(parsedNotes), (err) =>
       err
         ? console.error(err)
@@ -62,11 +69,13 @@ app.post("/api/notes", (req, res) => {
   }
 });
 
+// rout for deleting notes by id
 app.delete("/api/notes/:id", async (req, res) => {
   let notes = fs.readFileSync(`./Develop/db/db.json`);
   let parsedNotes = JSON.parse(notes);
   let updatedNotes = parsedNotes.filter((note) => note.id !== req.params.id);
 
+  // Write the string to a file
   fs.writeFile(`./Develop/db/db.json`, JSON.stringify(updatedNotes), (err) =>
     err ? res.json(err) : res.json(updatedNotes)
   );
