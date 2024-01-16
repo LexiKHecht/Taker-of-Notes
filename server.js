@@ -62,8 +62,16 @@ app.post("/api/notes", (req, res) => {
   }
 });
 
+app.delete("/api/notes/:id", async (req, res) => {
+  let notes = fs.readFileSync(`./Develop/db/db.json`);
+  let parsedNotes = JSON.parse(notes);
+  let updatedNotes = parsedNotes.filter((note) => note.id !== req.params.id);
 
-
+  fs.writeFile(`./Develop/db/db.json`, JSON.stringify(updatedNotes), (err) =>
+    err ? res.json(err) : res.json(updatedNotes)
+  );
+});
+    
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT} 🚀`)
 );
