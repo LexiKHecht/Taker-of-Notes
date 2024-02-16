@@ -6,7 +6,7 @@ const uniqid = require("uniqid");
 
 let newNote = require("./Develop/db/db.json");
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 // handles parsing data
 app.use(express.json());
 // set up express to handle the static files
